@@ -9,7 +9,6 @@ fi
 
 docker run -it \
     -v $SHARED_VOLUME \
-    --gpus all \
     --name=$2 \
     --shm-size=16g \
     --ulimit memlock=-1 \
@@ -20,8 +19,6 @@ docker run -it \
     --env="XAUTHORITY=$XAUTH" \
     --volume="$XAUTH:$XAUTH" \
     -e QT_GRAPHICSSYSTEM=native \
-    --env="NVIDIA_VISIBLE_DEVICES=all" \
-    --env="NVIDIA_DRIVER_CAPABILITIES=all" \
     --privileged \
     --network=host \
     -p 2222:2222 \
