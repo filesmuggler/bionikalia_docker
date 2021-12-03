@@ -18,6 +18,6 @@ sudo bash run_cpu.sh <image_name:tag> <container_name> <path_to_shared_ws>
 
 `<image_name:tag>` should look like this `bionikalia:master`
 `<container_name>` should look like this `bionikalia_gpu`
-`<path_to_share_ws>` should look like this `SHARED_VOLUME="/home/krzysztof/Projects/bionikalia/catkin_ws/:/catkin_ws/"`
+`<path_to_share_ws>` should look like this `"/home/krzysztof/Projects/bionikalia/catkin_ws/:/catkin_ws/"`
 
 
