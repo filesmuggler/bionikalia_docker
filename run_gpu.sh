@@ -23,6 +23,9 @@ docker run -it \
     --env="NVIDIA_VISIBLE_DEVICES=all" \
     --env="NVIDIA_DRIVER_CAPABILITIES=all" \
     --privileged \
+    -v /usr/lib64:/usr/hostLib64 \
+    -e LD_LIBRARY_PATH=/usr/hostLib64 \
+    -e LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64/ \
     --network=host \
     -p 2222:2222 \
     $1\

@@ -1,6 +1,10 @@
 FROM ubuntu:bionic
 FROM tensorflow/tensorflow:1.15.0
 
+RUN apt update && apt install -q -y --no-install-recommends snapd && \
+    rm -rf /var/lib/apt/lists/*
+
+
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
@@ -12,8 +16,8 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     dirmngr \
     gnupg2 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
-
 
 
 # setup keys
@@ -34,6 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-melodic-desktop-full \
     ros-melodic-fake-localization \
     ros-melodic-joy \
+    ros-melodic-ros-numpy \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt update && apt upgrade -y
@@ -52,19 +57,21 @@ RUN mkdir -p catkin_ws/src
 RUN wget https://cloud.robotyka.ia.pw.edu.pl/index.php/s/ZR5af5njxojQyqD/download
 RUN mv download tiago_sim_hospital.tar.bz2
 RUN tar xjf tiago_sim_hospital.tar.bz2 -C catkin_ws/src/
-RUN bash catkin_ws/src/tiago_sim_hospital/tiago_sim_hospital_packages.sh
+RUN sed -i '$ d' catkin_ws/src/tiago_sim_hospital/tiago_sim_hospital_packages.sh
+RUN yes | catkin_ws/src/tiago_sim_hospital/tiago_sim_hospital_packages.sh
 RUN rosinstall catkin_ws/src /opt/ros/melodic catkin_ws/src/tiago_sim_hospital/tiago_sim_hospital_repositories.rosinstall
-RUN source /opt/ros/melodic/setup.sh
-RUN cd catkin_ws
-RUN catkin_make -j1
+RUN /bin/bash -c ". /opt/ros/melodic/setup.bash"
+RUN cd catkin_ws && catkin config --extend /opt/ros/melodic && catkin build
 RUN apt-get -y install python3-pip
 RUN python3 -m pip install --upgrade pip
-RUN cd
-RUN virtualenv --system-site-packages -p /usr/bin/python3 venv 
-RUN source venv/bin/activate
-RUN pip install -r requirements.txt
-RUN python3 -m pip install detectron2 -f   https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
-
+RUN pip3 install virtualenv
+RUN pip3 install -U pip setuptools 
+COPY requirements.txt .
+RUN virtualenv --system-site-packages -p /usr/bin/python3 venv
+RUN /bin/bash -c ". venv/bin/activate" && \
+	pip install -r requirements.txt
+RUN /bin/bash -c ". venv/bin/activate" && \
+	pip install packaging scikit-image
 CMD ["bash"]
 
 

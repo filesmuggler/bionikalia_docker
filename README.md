@@ -3,7 +3,7 @@ Dockerfile with scripts for Bionikalia 2021 hackathon at PUT
 
 Build image
 ```bash
-sudo bash build.sh
+sudo bash build.sh gpu|cpu
 ```
 
 Run docker for the first time (if you have CUDA installed)

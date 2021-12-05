@@ -1,1 +1,1 @@
-docker build --network=host --no-cache -f Dockerfile.bionikalia -t bionikalia:master .
+docker build --network=host -f Dockerfile.bionikalia_$1 -t bionikalia:$1 .
